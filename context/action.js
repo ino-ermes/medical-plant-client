@@ -1,0 +1,11 @@
+export const DISPLAY_ALERT = 'display-alert';
+export const CLEAR_ALERT = 'clear-alert';
+export const REGISTER_USER_BEGIN = 'register-user-begin';
+export const REGISTER_USER_SUCCESS = 'register-user-success';
+export const REGISTER_USER_ERROR = 'register-user-error';
+export const LOGIN_USER_BEGIN = 'login-user-begin';
+export const LOGIN_USER_SUCCESS = 'login-user-success';
+export const LOGIN_USER_ERROR = 'login-user-error';
+export const UPDATE_USER_BEGIN = 'update-user-begin';
+export const UPDATE_USER_SUCCESS = 'update-user-success';
+export const UPDATE_USER_ERROR = 'update-user-error';
