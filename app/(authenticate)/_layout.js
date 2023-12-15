@@ -1,7 +1,7 @@
 import { Stack, Redirect } from 'expo-router';
 import { useAppContext } from '../../context/appContext';
 
-export default function StackLayout() {
+export default function AuthenticateLayout() {
 
   const { user } = useAppContext();
 

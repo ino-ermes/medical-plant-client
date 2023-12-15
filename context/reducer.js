@@ -8,18 +8,20 @@ export default function reducer(state, action) {
             return {...state, showAlert: false, alertType: '', alertText: ''};
         case AC.SWITCH_REGISTER_LOGIN:
             return {...state, isMember: !state.isMember};
-        case REGISTER_USER_BEGIN:
+        case AC.REGISTER_USER_BEGIN:
             return {...state, isLoading: true};
-        case REGISTER_USER_SUCCESS:
+        case AC.REGISTER_USER_SUCCESS:
             return {...state, isLoading: false, user: action.payload.user, showAlert: true, alertType: 'success', alertText: 'Register successful'};
-        case REGISTER_USER_ERROR:
+        case AC.REGISTER_USER_ERROR:
             return {...state, isLoading: false, showAlert: true, alertType: 'danger', alertText: action.payload.msg};
-        case LOGIN_USER_BEGIN:
+        case AC.LOGIN_USER_BEGIN:
             return {...state, isLoading: true};
-        case LOGIN_USER_SUCCESS:
+        case AC.LOGIN_USER_SUCCESS:
             return {...state, isLoading: false, user: action.payload.user, showAlert: true, alertType: 'success', alertText: 'Login successful'};
-        case LOGIN_USER_ERROR:
+        case AC.LOGIN_USER_ERROR:
             return {...state, isLoading: false, showAlert: true, alertType: 'danger', alertText: action.payload.msg};
+        case AC.SET_IMAGE_LIB:
+            return {...state, images: action.payload.images, index: action.payload.index};
         default:
                 throw Error(`no such action: ${action.type}`);
         }

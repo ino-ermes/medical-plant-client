@@ -1,15 +1,9 @@
 import { Stack } from 'expo-router';
-export default function Layout() {
+export default function PredictLayout() {
   return (
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="index"
-      />
-      <Stack.Screen
-        name="image-pick"
-        options={{
-          presentation: 'modal',
-        }}
       />
     </Stack>
   );

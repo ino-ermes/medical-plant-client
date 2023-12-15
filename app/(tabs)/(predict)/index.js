@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
 import { Image } from 'expo-image';
 import { Entypo } from '@expo/vector-icons';
 import { useState } from 'react';
@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
-export default function Home() {
+export default function Predict() {
 
     const [isModal, setModal] = useState(false);
 
@@ -17,7 +17,6 @@ export default function Home() {
     const toggleModal = () => {
         setModal(prev => !prev);
     };
-
 
     const [cameraPermissions, requestPermission] = ImagePicker.useCameraPermissions();
 
@@ -57,7 +56,7 @@ export default function Home() {
 
         formData.append("file", {
             uri: image,
-            type: 'image/jpeg', 
+            type: 'image/jpeg',
             name: 'test.jpg',
         });
 
@@ -76,41 +75,40 @@ export default function Home() {
     return (
 
         <View style={styles.container}>
-            {isModal &&
-                <TouchableWithoutFeedback onPress={toggleModal}>
-                    <View style={styles.modal}>
-                        <View style={styles.modalContent}>
-                            <TouchableOpacity style={styles.btnIcon} onPress={takeAPicture}>
-                                <Entypo style={styles.icon} name="camera" size={24} color="black" />
-                                <Text style={styles.btnIconTxt}>Camera</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.btnIcon} onPress={pickImage}>
-                                <Entypo style={styles.icon} name="images" size={24} color="black" />
-                                <Text style={styles.btnIconTxt}>Library</Text>
-                            </TouchableOpacity>
-                        </View>
+
+            <View style={isModal ? styles.modal : styles.offModal}>
+                <Pressable style={styles.toggleModal} onPress={toggleModal}>
+                    <View style={styles.modalContent}>
+                        <TouchableOpacity style={styles.btnIcon} onPress={takeAPicture}>
+                            <Entypo style={styles.icon} name="camera" size={24} color="black" />
+                            <Text style={styles.btnIconTxt}>Camera</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.btnIcon} onPress={pickImage}>
+                            <Entypo style={styles.icon} name="images" size={24} color="black" />
+                            <Text style={styles.btnIconTxt}>Library</Text>
+                        </TouchableOpacity>
                     </View>
-                </TouchableWithoutFeedback>
-            }
+                </Pressable>
 
-
-
-            <View style={styles.subContainer}>
-                <View style={styles.containerImage}>
-                    <TouchableOpacity onPress={toggleModal} style={{ height: '100%', width: '100%' }}>
-                        <Image
-                            style={styles.image}
-                            source={image}
-                            placeholder={blurhash}
-                            contentFit="cover"
-                            transition={1000}
-                        />
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity style={styles.btn} onPress={predict}>
-                    <Text style={styles.btnTxt}>Predict</Text>
-                </TouchableOpacity>
             </View>
+
+            <TouchableOpacity
+                onPress={toggleModal}
+                style={styles.imageContainer}
+                activeOpacity={0.8}
+            >
+                <Image
+                    style={styles.image}
+                    source={image}
+                    placeholder={blurhash}
+                    contentFit="cover"
+                    transition={1000}
+                />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btn} onPress={predict}>
+                <Text style={styles.btnTxt}>Predict</Text>
+            </TouchableOpacity>
         </View>
     );
 }
@@ -119,35 +117,41 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         position: 'relative',
-        alignContent: 'center',
-        justifyContent: 'center',
-    },
-    subContainer: {
-        width: 300,
-        alignSelf: 'center',
-    },
-    containerImage: {
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 300,
-        height: 300,
-        marginBottom: 32,
+    },
+    modal: {
+        position: 'absolute',
+        height: '100%',
+        width: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        zIndex: 999,
+    },
+    offModal: {
+        display: 'none',
+    },
+    toggleModal: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    modalContent: {
+        width: '50%',
     },
     image: {
-        width: '100%',
-        height: '100%',
+        width: 300,
+        height: 300,
         backgroundColor: '#0553',
     },
     btn: {
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 8,
-        paddingHorizontal: 32,
+        width: 300,
         borderRadius: 4,
         elevation: 3,
         backgroundColor: '#2cb1bc',
-        marginVertical: 16,
+        marginTop: 32,
     },
     btnTxt: {
         fontSize: 16,
@@ -174,16 +178,4 @@ const styles = StyleSheet.create({
     icon: {
         color: '#fff',
     },
-    modal: {
-        position: 'absolute',
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        height: '100%',
-        width: '100%',
-        flex: 1,
-        zIndex: 999,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    modalContent: {
-    }
 });

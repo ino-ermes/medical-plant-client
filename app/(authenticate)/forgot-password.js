@@ -4,7 +4,7 @@ import { FormRow, Alert, Logo } from '../../components';
 import { useAppContext } from '../../context/appContext';
 import { useRouter } from 'expo-router';
 
-export default function Register() {
+export default function ForgotPassword() {
 
     const { isLoading, showAlert, forgotPassword } = useAppContext();
 

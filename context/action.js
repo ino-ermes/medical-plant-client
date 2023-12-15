@@ -9,3 +9,4 @@ export const LOGIN_USER_ERROR = 'login-user-error';
 export const UPDATE_USER_BEGIN = 'update-user-begin';
 export const UPDATE_USER_SUCCESS = 'update-user-success';
 export const UPDATE_USER_ERROR = 'update-user-error';
+export const SET_IMAGE_LIB = 'set-image-lib';

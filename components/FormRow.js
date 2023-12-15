@@ -11,7 +11,7 @@ function FormRow({value, onChangeText, name}) {
     )
 }
 
-styles = StyleSheet.create({
+const styles = StyleSheet.create({
     formRow: {
         marginBottom: 16,
     },

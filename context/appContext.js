@@ -11,6 +11,8 @@ const initialState = {
     alertText: '',
     alertType: '',
     user: {a: 'a'},
+    images: null,
+    index: null,
 };
 
 const AppContext = createContext();
@@ -68,12 +70,23 @@ function AppProvider({children}) {
         }
         clearAlert();
     };
+
+    const setImageLib = (images, index) => {
+        dispatch({
+            type: AC.SET_IMAGE_LIB,
+            payload: {
+                images,
+                index
+            }
+        })
+    }
     return (
         <AppContext.Provider value={{...state,
             displayAlert,
             clearAlert,
             registerUser,
             loginUser,
+            setImageLib,
         }}>
             {children}
         </AppContext.Provider>
