@@ -1,21 +1,14 @@
-import { StyleSheet, View, Text, TouchableOpacity, Easing } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Formik } from 'formik';
-import { FormRow, Alert, Logo } from '../../components';
-import { useAppContext } from '../../context/appContext';
-import { useRouter, useLocalSearchParams, Redirect } from 'expo-router';
-
-export default function SetPassword() {
+import { FormRow, Alert } from '../../../components';
+import { useAppContext } from '../../../context/appContext';
+import { FontAwesome } from '@expo/vector-icons';
 
 
-    const { email } = useLocalSearchParams();
+export default function ChangePassword() {
 
-    if (!email) {
-        return <Redirect href="/" />;
-    }
 
-    const router = useRouter();
-
-    const { isLoading, showAlert, registerUser } = useAppContext();
+    const { isLoading, showAlert, changePassword } = useAppContext();
 
 
 
@@ -23,29 +16,29 @@ export default function SetPassword() {
         <View style={styles.container}>
             <View style={styles.form}>
                 <Formik
-                    initialValues={{ email: '', token: '', password: '', repassword: '' }}
+                    initialValues={{ password: '', newPassword: '', reNewPassword: ''}}
                     onSubmit={(values, actions) => console.log(values)}
                 >
                     {
                         (props) =>
                             <View >
-                                <Logo style={styles.icon} />
+                                <FontAwesome name="user-secret" size={50} color="#2cb1bc" style={styles.icon}/>                                
                                 <Text style={styles.title}>Enter Password</Text>
                                 {showAlert && <Alert />}
-                                <FormRow
-                                    onChangeText={props.handleChange('token')}
-                                    value={props.values.token}
-                                    name='Token'
-                                />
                                 <FormRow
                                     onChangeText={props.handleChange('password')}
                                     value={props.values.password}
                                     name='Password'
                                 />
                                 <FormRow
-                                    onChangeText={props.handleChange('repassword')}
-                                    value={props.values.repassword}
-                                    name='Confirm Password'
+                                    onChangeText={props.handleChange('newPassword')}
+                                    value={props.values.newPassword}
+                                    name='New Password'
+                                />
+                                <FormRow
+                                    onChangeText={props.handleChange('reNewPassword')}
+                                    value={props.values.reNewPassword}
+                                    name='Confirm New Password'
                                 />
                                 <TouchableOpacity style={styles.btn} onPress={props.handleSubmit} disabled={isLoading} >
                                     <Text style={styles.btnTxt}>Change Password</Text>

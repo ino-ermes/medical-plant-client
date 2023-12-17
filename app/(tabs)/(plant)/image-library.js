@@ -1,6 +1,4 @@
 import {
-    Platform,
-    StatusBar,
     StyleSheet,
     View,
 } from "react-native";
@@ -8,9 +6,7 @@ import {
 import { useState } from "react";
 
 import ImageViewing from "react-native-image-viewing";
-import ImageHeader from "../../../components/ImageHeader";
-import ImageFooter from "../../../components/ImageFooter";
-import ImageList from "../../../components/ImageList";
+import {ImageHeader, ImageFooter, ImageList} from "../../../components";
 
 const images = [
     {

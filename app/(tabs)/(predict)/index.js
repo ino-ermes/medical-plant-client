@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
-import { Image } from 'expo-image';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
+import { Modal } from '../../../components';
 
 import axios from 'axios';
 
@@ -75,22 +75,21 @@ export default function Predict() {
     return (
 
         <View style={styles.container}>
-
-            <View style={isModal ? styles.modal : styles.offModal}>
-                <Pressable style={styles.toggleModal} onPress={toggleModal}>
-                    <View style={styles.modalContent}>
-                        <TouchableOpacity style={styles.btnIcon} onPress={takeAPicture}>
-                            <Entypo style={styles.icon} name="camera" size={24} color="black" />
-                            <Text style={styles.btnIconTxt}>Camera</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.btnIcon} onPress={pickImage}>
-                            <Entypo style={styles.icon} name="images" size={24} color="black" />
-                            <Text style={styles.btnIconTxt}>Library</Text>
-                        </TouchableOpacity>
-                    </View>
-                </Pressable>
-
-            </View>
+            <Modal
+                handleOuterPress={toggleModal}
+                visible={isModal}
+            >
+                <View style={styles.chooseImgBox}>
+                    <TouchableOpacity style={styles.btnIcon} onPress={takeAPicture}>
+                        <Entypo style={styles.icon} name="camera" size={24} color="black" />
+                        <Text style={styles.btnIconTxt}>Camera</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.btnIcon} onPress={pickImage}>
+                        <Entypo style={styles.icon} name="images" size={24} color="black" />
+                        <Text style={styles.btnIconTxt}>Library</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
 
             <TouchableOpacity
                 onPress={toggleModal}
@@ -99,7 +98,7 @@ export default function Predict() {
             >
                 <Image
                     style={styles.image}
-                    source={image}
+                    source={{uri: image}}
                     placeholder={blurhash}
                     contentFit="cover"
                     transition={1000}
@@ -120,22 +119,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    modal: {
-        position: 'absolute',
-        height: '100%',
-        width: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        zIndex: 999,
-    },
-    offModal: {
-        display: 'none',
-    },
-    toggleModal: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    modalContent: {
+    chooseImgBox: {
         width: '50%',
     },
     image: {

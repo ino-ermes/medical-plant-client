@@ -1,8 +1,13 @@
-// import Logo from './Logo';
-import FormRow from './FormRow';
 import Alert from './Alert';
-import Logo from './Logo';
+import Dropdown from './Dropdown';
+import FormRow from './FormRow';
+import HistoryItem from './HistoryItem';
+import ImageFooter from './ImageFooter';
+import ImageHeader from './ImageHeader';
+import ImageList from './ImageList';
 import ItemList from './ItemList';
+import Logo from './Logo';
+import Modal from './Modal';
 import PlantItem from './PlantItem';
 
-export {FormRow, Alert, Logo, ItemList, PlantItem};
+export {Alert, Dropdown, FormRow, HistoryItem, ImageFooter, ImageHeader, ImageList, ItemList, Logo, Modal, PlantItem};

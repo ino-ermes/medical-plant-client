@@ -2,10 +2,10 @@ import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
 
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
-function PlantItem({ src, name, scienceName, ...props }) {
+function PlantItem({ src, name, scienceName, style, ...props }) {
 
     return (
-        <TouchableOpacity style={styles.container} {...props}>
+        <TouchableOpacity style={[styles.container, style]} {...props}>
             <Image 
                     style={styles.image}
                     source={{uri: src}}
@@ -31,6 +31,8 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 4,
         elevation: 3,
+        borderTopColor: '#2cb1bc',
+        borderTopWidth: 4,
     },
     image: {
         height: 100,
