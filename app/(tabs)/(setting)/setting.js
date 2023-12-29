@@ -1,4 +1,5 @@
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Modal } from '../../../components';
@@ -12,15 +13,21 @@ export default function Setting() {
 
     const [isModal, setModal] = useState(false);
 
-    const changeUserImg = () => {
-        console.log(imgPreview);
-    }
-
-    const { user, logoutUser } = useAppContext();
-
+    
+    const { user, logoutUser, updateUser } = useAppContext();
     const [imgPreview, setImgPreview] = useState(null);
-
     const router = useRouter();
+    
+    const changeUserImg = () => {
+        if(!imgPreview) return;
+        updateUser({
+            img_uri: imgPreview,
+        });
+        setTimeout(() => {
+            setModal(false);
+        }, 6000);
+
+    };
 
     const pickImage = async () => {
         const result = await launchImageLibraryAsync({
@@ -55,7 +62,7 @@ export default function Setting() {
                     >
                         <Image
                             style={styles.image}
-                            source={{ uri: imgPreview || user.image }}
+                            source={{ uri: imgPreview || user.user.img_url }}
                             contentFit="cover"
                             transition={1000}
                         />
@@ -76,12 +83,12 @@ export default function Setting() {
             >
                 <Image
                     style={styles.image}
-                    source={{ uri: user.image }}
+                    source={{ uri: user.user.img_url }}
                     contentFit="cover"
                     transition={1000}
                 />
+            <Text style={styles.username}>{user.user.name}</Text>
             </TouchableOpacity>
-
             <View style={styles.navBox}>
                 <View style={styles.sep} />
                 <TouchableOpacity style={styles.nav} onPress={() => router.push('/change-info')}>
@@ -179,5 +186,15 @@ const styles = StyleSheet.create({
     },
     btnDel: {
         backgroundColor: '#dc143c',
-    }
+    },
+    username: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textShadowColor: '#ccc',
+        textShadowOffset: {
+            height: 1.5,
+            width: 1.5,
+        },
+        textShadowRadius: 1,
+    },
 });

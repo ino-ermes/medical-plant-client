@@ -1,4 +1,5 @@
-import { Image, FlatList, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import {FlatList, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import { Image } from 'expo-image';
 
 const { width } = Dimensions.get('window');
 const imageSize = (width) / 2 - 6;
@@ -6,7 +7,7 @@ const imageSize = (width) / 2 - 6;
 const IMAGE_WIDTH = imageSize;
 const IMAGE_HEIGH = imageSize;
 
-function ImageList({ images, onPress }) {
+function ImageList({ images, onPress, onEndReached }) {
     return (
         <FlatList
             data={images}
@@ -20,6 +21,8 @@ function ImageList({ images, onPress }) {
                     <Image source={{ uri: item }} style={styles.image} />
                 </TouchableOpacity>}
             numColumns={2}
+            onEndReachedThreshold={0.3}
+            onEndReached={onEndReached}
         />
 
     )

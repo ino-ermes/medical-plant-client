@@ -2,11 +2,13 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { Formik } from 'formik';
 import { FormRow, Alert, Logo } from '../../../components';
 import { useAppContext } from '../../../context/appContext';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
 
 export default function Register() {
 
-	const { isLoading, showAlert, registerUser } = useAppContext();
+	const { isMember, switchRegisterLogin, isLoading, showAlert, registerUser } = useAppContext();
+	
+	if (isMember) return <Redirect href="/login" />;
 
 	const router = useRouter();
 
@@ -15,7 +17,7 @@ export default function Register() {
 			<View style={styles.form}>
 				<Formik
 					initialValues={{ email: '', name: '', password: '' }}
-					onSubmit={(values, actions) => console.log(values)}
+					onSubmit={(values, actions) => registerUser(values)}
 				>
 					{
 						(props) =>
@@ -41,7 +43,7 @@ export default function Register() {
 								<TouchableOpacity style={styles.btn} onPress={props.handleSubmit} disabled={isLoading} >
 									<Text style={styles.btnTxt}>Register</Text>
 								</TouchableOpacity>
-								<Text style={styles.txt}>Already have an account? <Text style={styles.txtBtn} onPress={() => { router.replace('/login'); }}>Login</Text></Text>
+								<Text style={styles.txt}>Already have an account? <Text style={styles.txtBtn} onPress={() => switchRegisterLogin()}>Login</Text></Text>
 							</View>
 					}
 				</Formik>

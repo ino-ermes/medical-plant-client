@@ -1,90 +1,72 @@
-import { StyleSheet, View, TextInput, FlatList, Keyboard } from 'react-native';
+import { StyleSheet, View, TextInput, FlatList, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { PlantItem } from '../../../components';
 import { useRouter } from 'expo-router';
-
-const list = [
-    {
-        image: 'https://yte123.com/wp-content/uploads/2018/07/c%C3%A2y-kim-ng%C3%A2n-hoa-e1532269686635.jpg',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        key: '1'
-    },
-    {
-        image: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        key: '2'
-    },
-    {
-        image: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        key: '3'
-    },
-    {
-        image: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        key: '4'
-    },
-    {
-        image: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        key: '5'
-    },
-    {
-        image: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        id: '6'
-    },
-    {
-        image: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        id: '7'
-    },
-    {
-        image: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        id: '8'
-    },
-]
+import { useAppContext } from '../../../context/appContext';
 
 export default function PlantList() {
 
-    const [searchText, setSearchText] = useState('');
-    const [focusSearch, setfocusSearch] = useState(false);
+    const [search, setSearch] = useState('');
+    const [localSearch, setLocalSearch] = useState('');
+    const [isFocus, setFocus] = useState(false);
+
+    const debounce = (fn) => {
+        let timerId;
+        return (text) => {
+            if (isLoading) return;
+            clearTimeout(timerId);
+            setLocalSearch(text);
+            timerId = setTimeout(() => {
+                fn(text);
+            }, (1000));
+        }
+    };
+
+    const optimizedDebounde = useMemo(() => {
+        return debounce((text) => {
+            setSearch(text);
+        });
+    }, []);
 
     const router = useRouter();
 
-    const handelSearch = () => {
-        Keyboard.dismiss();
-        console.log(searchText);
-    };
+    const { getPlants, plants, isLoading } = useAppContext();
+    useEffect(() => {
+        getPlants(search);
+    }, [search]);
 
     return (
         <View style={styles.container}>
             <View style={styles.searchBar}>
-                <TextInput style={styles.searchInput} onSubmitEditing={handelSearch} value={searchText} onChangeText={(text) => { setSearchText(text) }} onFocus={() => { setfocusSearch(true) }} onBlur={() => { setfocusSearch(false) }} />
-                <Feather name="search" size={20} style={focusSearch ? styles.searchIconFocusInput : styles.searchIcon} onPress={handelSearch} />
+                <TextInput style={[styles.searchInput, isFocus ? styles.searchInputFocus : null]} value={localSearch} onChangeText={optimizedDebounde} onFocus={() => { setFocus(true) }} onBlur={() => { setFocus(false) }} placeholder='Search' />
+                <Feather name="search" size={20} style={[styles.searchIcon, isFocus ? styles.searchIconFocusInput : null]} />
             </View>
-            <FlatList contentContainerStyle={{ paddingBottom: 12 }}
-                data={list}
-                renderItem={({ item }) =>
-                    <PlantItem
-                        name={item.name}
-                        scienceName={item.scienceName}
-                        src={item.image}
-                        onPress={() => {router.push('/plant-details')}}
-                    />
+            {isLoading ?
+                <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ fontSize: 30, color: '#ccc' }}>Loading...</Text>
+                </View> :
+                <FlatList contentContainerStyle={{ paddingBottom: 12 }}
+                    data={plants}
+                    renderItem={({ item }) =>
+                        <PlantItem
+                            name={item.common_name}
+                            scienceName={item.binomial_name}
+                            src={item.thumb_img_url}
+                            onPress={() => {
+                                router.push({
+                                    'pathname': '/plant-details',
+                                    'params': {
+                                        'plant_id': item._id
+                                    }
+                                })
+                            }}
+                        />
 
-                }
-            />
+                    }
+                    keyExtractor={(item) => item._id}
+                />
+            }
         </View>
     );
 }
@@ -116,6 +98,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 6,
         fontSize: 16,
     },
+    searchInputFocus: {
+        borderColor: '#000',
+    },
     searchIcon: {
         padding: 10,
         position: 'absolute',
@@ -123,8 +108,6 @@ const styles = StyleSheet.create({
         opacity: 0.5,
     },
     searchIconFocusInput: {
-        padding: 10,
-        position: 'absolute',
-        right: 6,
+        opacity: 1,
     }
 });

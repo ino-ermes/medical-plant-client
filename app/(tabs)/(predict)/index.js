@@ -1,14 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
 import { Entypo } from '@expo/vector-icons';
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { Modal } from '../../../components';
-
-import axios from 'axios';
+import { useAppContext } from '../../../context/appContext';
+import { useRouter } from 'expo-router';
 
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 export default function Predict() {
+
+    const {predictPlant, isLoading} = useAppContext();
 
     const [isModal, setModal] = useState(false);
 
@@ -50,28 +53,12 @@ export default function Predict() {
         }
     };
 
-    const predict = async () => {
-
-        const formData = new FormData();
-
-        formData.append("file", {
-            uri: image,
-            type: 'image/jpeg',
-            name: 'test.jpg',
-        });
-
-        try {
-            const response = await axios.post('https://besame-x2-mucho.onrender.com/api/v1/plant/upload', formData, {
-                headers: {
-                    'content-type': 'multipart/form-data',
-                },
-            });
-            console.log(response.data);
-        } catch (error) {
-            console.error("Error uploading image:", error);
-        }
+    const router = useRouter();
+    const handlePredict = (image) => {
+        predictPlant(image);
+        router.push('/result');
     }
-
+    
     return (
 
         <View style={styles.container}>
@@ -105,7 +92,7 @@ export default function Predict() {
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.btn} onPress={predict}>
+            <TouchableOpacity disabled={isLoading || image == null} style={styles.btn} onPress={() => handlePredict(image)}>
                 <Text style={styles.btnTxt}>Predict</Text>
             </TouchableOpacity>
         </View>

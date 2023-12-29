@@ -1,13 +1,20 @@
 import { Stack, Redirect } from 'expo-router';
 import { useAppContext } from '../../context/appContext';
+import { View, Text } from 'react-native';
 
 export default function AuthenticateLayout() {
 
-  const { user } = useAppContext();
+  const { user, isLoading } = useAppContext();
 
   if (user) {
     return <Redirect href="/" />;
   }
+
+  if (isLoading) return (
+    <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+      <Text style={{ fontSize: 30, color: '#ccc' }}>Loading...</Text>
+    </View>
+  )
 
   return (
     <Stack

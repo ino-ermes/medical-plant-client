@@ -10,14 +10,18 @@ export default function ChangePassword() {
 
     const { isLoading, showAlert, changePassword } = useAppContext();
 
-
+    const handleSubmit = ({password, newPassword, reNewPassword}) => {
+        if(newPassword == reNewPassword) {
+            changePassword(password, newPassword);
+        }
+    };
 
     return (
         <View style={styles.container}>
             <View style={styles.form}>
                 <Formik
                     initialValues={{ password: '', newPassword: '', reNewPassword: ''}}
-                    onSubmit={(values, actions) => console.log(values)}
+                    onSubmit={handleSubmit}
                 >
                     {
                         (props) =>

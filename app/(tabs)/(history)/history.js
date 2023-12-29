@@ -6,100 +6,8 @@ import {
     StyleSheet
 } from "react-native";
 import { HistoryItem, Dropdown, Modal } from "../../../components";
-import { useState } from "react";
-
-const hist = [
-    {
-        id: '1',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '2',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '3',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '4',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '5',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '6',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '7',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '8',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '9',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-    {
-        id: '10',
-        uri: 'https://bs.plantnet.org/image/s/3b7d7b045c8a2885e791fe8a8c2ac230e2601461',
-        plantId: '1',
-        name: 'KIM TIỀN THẢO',
-        scienceName: 'Desmodium styracifolium (Osbeck) Merr.',
-        date: '2023/12/12',
-        status: '1',
-    },
-];
+import { useEffect, useState } from "react";
+import { useAppContext } from "../../../context/appContext";
 
 const DeleteForm = ({ data, handleDelete, hideModal }) => {
     return (
@@ -125,17 +33,192 @@ const DeleteForm = ({ data, handleDelete, hideModal }) => {
         </View>
     )
 };
-
 const plants = [
     {
-        id: '123',
-        name: 'abc',
+        "id": 0,
+        "name": "BẠC HÀ",
     },
     {
-        id: '1234',
-        name: 'abcd',
+        "id": 1,
+        "name": "BẠCH ĐỒNG NỮ",
     },
-];
+    {
+        "id": 2,
+        "name": "BỐ CHÍNH SÂM",
+    },
+    {
+        "id": 3,
+        "name": "BỒ CÔNG ANH",
+    },
+    {
+        "id": 4,
+        "name": "CAM THẢO ĐẤT",
+    },
+    {
+        "id": 5,
+        "name": "CỎ MẦN TRẦU",
+    },
+    {
+        "id": 6,
+        "name": "CỎ NHỌ NỒI",
+    },
+    {
+        "id": 7,
+        "name": "CỎ TRANH",
+    },
+    {
+        "id": 8,
+        "name": "CỎ XƯỚC",
+    },
+    {
+        "id": 9,
+        "name": "CỐI XAY",
+    },
+    {
+        "id": 10,
+        "name": "CỐT KHÍ",
+    },
+    {
+        "id": 11,
+        "name": "CÚC HOA",
+    },
+    {
+        "id": 12,
+        "name": "DÀNH DÀNH",
+    },
+    {
+        "id": 13,
+        "name": "DÂU TẰM",
+    },
+    {
+        "id": 14,
+        "name": "ĐỊA LIỀN",
+    },
+    {
+        "id": 15,
+        "name": "DIỆP HẠ CHÂU",
+    },
+    {
+        "id": 16,
+        "name": "ĐINH LĂNG",
+    },
+    {
+        "id": 17,
+        "name": "ĐƠN LÁ ĐỎ",
+    },
+    {
+        "id": 18,
+        "name": "DỪA CẠN",
+    },
+    {
+        "id": 19,
+        "name": "GAI",
+    },
+    {
+        "id": 20,
+        "name": "GỪNG",
+    },
+    {
+        "id": 21,
+        "name": "HẠ KHÔ THẢO",
+    },
+    {
+        "id": 22,
+        "name": "HÚNG CHANH",
+    },
+    {
+        "id": 23,
+        "name": "HƯƠNG NHU TÍA",
+    },
+    {
+        "id": 24,
+        "name": "HUYẾT DỤ",
+    },
+    {
+        "id": 25,
+        "name": "HY THIÊM",
+    },
+    {
+        "id": 26,
+        "name": "KÉ ĐẦU NGỰA",
+    },
+    {
+        "id": 27,
+        "name": "KIM NGÂN",
+    },
+    {
+        "id": 28,
+        "name": "KIM TIỀN THẢO",
+    },
+    {
+        "id": 29,
+        "name": "LÁ LỐT",
+    },
+    {
+        "id": 30,
+        "name": "MÃ ĐỀ",
+    },
+    {
+        "id": 31,
+        "name": "MẠCH MÔN",
+    },
+    {
+        "id": 32,
+        "name": "MẦN TƯỚI",
+    },
+    {
+        "id": 33,
+        "name": "NÁNG",
+    },
+    {
+        "id": 34,
+        "name": "NGẢI CỨU",
+    },
+    {
+        "id": 35,
+        "name": "NGHỆ",
+    },
+    {
+        "id": 36,
+        "name": "CÂY ỔI",
+    },
+    {
+        "id": 37,
+        "name": "RAU MÁ",
+    },
+    {
+        "id": 38,
+        "name": "RAU SAM",
+    },
+    {
+        "id": 39,
+        "name": "SẢ",
+    },
+    {
+        "id": 40,
+        "name": "SẮN DÂY",
+    },
+    {
+        "id": 41,
+        "name": "TÍA TÔ",
+    },
+    {
+        "id": 42,
+        "name": "TRẮC BÁCH DIỆP",
+    },
+    {
+        "id": 43,
+        "name": "XẠ CAN",
+    },
+    {
+        "id": 44,
+        "name": "XUYÊN TÂM LIÊN",
+    },
+    {
+        "id": 45,
+        "name": "Ý DĨ",
+    }
+]
 
 const organs = [
     {
@@ -271,6 +354,13 @@ export default function History() {
         })
     }
 
+    
+    const {getHistories, histories, predict_list} = useAppContext();
+
+    useEffect(() => {
+        getHistories();
+    }, [predict_list]);
+
     return (
         <View
             style={styles.container}
@@ -298,35 +388,34 @@ export default function History() {
 
             <FlatList
                 contentContainerStyle={styles.list}
-                data={hist}
+                data={histories}
                 renderItem={
                     ({ item }) =>
                         <HistoryItem
-                            style={{marginBottom: 10}}
-                            name={item.name}
-                            date={item.date}
-                            imageUri={item.uri}
-                            scienceName={item.scienceName}
+                            name={item.common_name}
+                            date={item.updated_at}
+                            imageUri={item.thumb_img_url}
+                            scienceName={item.binomial_name}
                             handleDelete={() => setModal({
                                 modal: true,
                                 action: 'delete',
                                 payload: {
-                                    histId: item.id,
+                                    histId: item._id,
                                 }
                             })}
                             handleShare={() => setModal({
                                 modal: true,
                                 action: 'share',
                                 payload: {
-                                    histId: item.id,
-                                    plantId: item.plantId,
+                                    histId: item._id,
+                                    plantId: item.plant_id,
                                 },
                             })}
                         />
                 }
-                keyExtractor={(item) => item.id}
-                onEndReachedThreshold={0}
-                onEndReached={() => console.log('reached end')}
+                keyExtractor={(item) => item._id}
+                onEndReachedThreshold={0.3}
+                onEndReached={getHistories}
             />
         </View>
     )

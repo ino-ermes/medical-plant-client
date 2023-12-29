@@ -7,16 +7,20 @@ import { MaterialIcons } from '@expo/vector-icons';
 export default function ChangeInfo() {
 
 
-    const { isLoading, showAlert, changeUserInfo } = useAppContext();
+    const { isLoading, showAlert, updateUser } = useAppContext();
 
-
+    const handleSubmit = ({name}) => {
+        updateUser({
+            name,
+        });
+    };
 
     return (
         <View style={styles.container}>
             <View style={styles.form}>
                 <Formik
                     initialValues={{ name: ''}}
-                    onSubmit={(values, actions) => console.log(values)}
+                    onSubmit={handleSubmit}
                 >
                     {
                         (props) =>

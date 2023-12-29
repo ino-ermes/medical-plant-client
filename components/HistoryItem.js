@@ -1,9 +1,10 @@
-import { View, TouchableOpacity, Text, Image, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { Image } from 'expo-image';
+import { memo } from "react";
 
-
-export default function HistoryItem({ imageUri, name, scienceName, date, handleShare, handleDelete, style }) {
+function HistoryItem({ imageUri, name, scienceName, date, handleShare, handleDelete }) {
     return (
-        <TouchableOpacity style={[styles.container, style]} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.container} activeOpacity={0.8}>
             <Image
                 style={styles.image}
                 source={{ uri: imageUri }}
@@ -16,7 +17,7 @@ export default function HistoryItem({ imageUri, name, scienceName, date, handleS
                 <Text style={styles.date}>{date} </Text>
             </View>
             <View style={styles.btnBox}>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.btn}
                     onPress={handleShare}
                 >
@@ -27,7 +28,7 @@ export default function HistoryItem({ imageUri, name, scienceName, date, handleS
                     onPress={handleDelete}
                 >
                     <Text style={styles.btnText}>Delete</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         </TouchableOpacity>
     );
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
         borderRightWidth: 3,
         backgroundColor: '#fff',
         elevation: 3,
+        marginBottom: 10,
     },
     image: {
         width: 100,
@@ -91,3 +93,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#dc143c',
     },
 });
+
+export default memo(HistoryItem)

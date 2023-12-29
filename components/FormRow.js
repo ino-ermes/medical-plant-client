@@ -6,6 +6,9 @@ function FormRow({value, onChangeText, name}) {
             <TextInput style={styles.formInput}
                 onChangeText={onChangeText}
                 value={value}
+                secureTextEntry={name=='Password'}
+                autoCapitalize='none'
+                autoComplete={name=='Email' ? 'email' : 'off'}
             />
         </View>
     )
