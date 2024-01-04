@@ -9,5 +9,7 @@ import ItemList from './ItemList';
 import Logo from './Logo';
 import Modal from './Modal';
 import PlantItem from './PlantItem';
+import CircleSpin from './CircleSpin';
+import EarthLoading from './EarthLoading';
 
-export {Alert, Dropdown, FormRow, HistoryItem, ImageFooter, ImageHeader, ImageList, ItemList, Logo, Modal, PlantItem};
+export {Alert, Dropdown, FormRow, HistoryItem, ImageFooter, ImageHeader, ImageList, ItemList, Logo, Modal, PlantItem, CircleSpin, EarthLoading};

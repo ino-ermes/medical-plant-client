@@ -6,6 +6,7 @@ import { Dimensions } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useAppContext } from '../../../context/appContext';
 import { useEffect } from 'react';
+import { CircleSpin } from '../../../components';
 
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 const organImgWidth = Dimensions.get('window').width / 5 - 20;
@@ -30,7 +31,7 @@ export default function PlantDetails() {
 
     if (isLoading) return (
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text style={{ fontSize: 30, color: '#ccc' }}>Loading...</Text>
+            <CircleSpin />
         </View>
     )
 
@@ -80,7 +81,7 @@ export default function PlantDetails() {
                     {organs.map((value) =>
                         <View style={styles.eachOrganContainer} key={value.organ}>
                             <TouchableOpacity onPress={() => router.push({
-                                'pathname': 'image-library',
+                                'pathname': 'result-image-library',
                                 'params': {
                                     plant_id: plant_details._id,
                                     organ: value.organ

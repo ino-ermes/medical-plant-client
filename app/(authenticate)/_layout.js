@@ -1,6 +1,7 @@
 import { Stack, Redirect } from 'expo-router';
 import { useAppContext } from '../../context/appContext';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
+import { CircleSpin } from '../../components';
 
 export default function AuthenticateLayout() {
 
@@ -12,7 +13,7 @@ export default function AuthenticateLayout() {
 
   if (isLoading) return (
     <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-      <Text style={{ fontSize: 30, color: '#ccc' }}>Loading...</Text>
+      <CircleSpin />
     </View>
   )
 

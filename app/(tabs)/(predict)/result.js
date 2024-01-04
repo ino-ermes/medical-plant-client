@@ -2,6 +2,7 @@ import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { PlantItem } from '../../../components';
 import { useRouter } from 'expo-router';
 import { useAppContext } from '../../../context/appContext';
+import {EarthLoading} from '../../../components';
 
 export default function Result() {
 
@@ -10,7 +11,7 @@ export default function Result() {
 
     if (isLoading) return (
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text style={{ fontSize: 30, color: '#ccc' }}>Predicting...</Text>
+            <EarthLoading />
         </View>
     )
 

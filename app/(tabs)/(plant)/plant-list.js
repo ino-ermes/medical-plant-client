@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { PlantItem } from '../../../components';
 import { useRouter } from 'expo-router';
 import { useAppContext } from '../../../context/appContext';
+import { CircleSpin } from '../../../components';
 
 export default function PlantList() {
 
@@ -44,7 +45,7 @@ export default function PlantList() {
             </View>
             {isLoading ?
                 <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <Text style={{ fontSize: 30, color: '#ccc' }}>Loading...</Text>
+                    <CircleSpin />
                 </View> :
                 <FlatList contentContainerStyle={{ paddingBottom: 12 }}
                     data={plants}

@@ -16,8 +16,8 @@ function HistoryItem({ imageUri, name, scienceName, date, handleShare, handleDel
                 <Text numberOfLines={2} style={styles.scienceName}>{scienceName} </Text>
                 <Text style={styles.date}>{date} </Text>
             </View>
-            <View style={styles.btnBox}>
-                {/* <TouchableOpacity
+            {/* <View style={styles.btnBox}>
+                <TouchableOpacity
                     style={styles.btn}
                     onPress={handleShare}
                 >
@@ -28,8 +28,8 @@ function HistoryItem({ imageUri, name, scienceName, date, handleShare, handleDel
                     onPress={handleDelete}
                 >
                     <Text style={styles.btnText}>Delete</Text>
-                </TouchableOpacity> */}
-            </View>
+                </TouchableOpacity>
+            </View> */}
         </TouchableOpacity>
     );
 }

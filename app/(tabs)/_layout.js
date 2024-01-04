@@ -14,7 +14,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      screenOptions={{ headerShown: false }}
+      screenOptions={{ headerShown: false, tabBarShowLabel: false}}
     >
       <Tabs.Screen
         name='(predict)'

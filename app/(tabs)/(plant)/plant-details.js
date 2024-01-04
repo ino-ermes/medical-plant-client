@@ -6,6 +6,7 @@ import { Dimensions } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useAppContext } from '../../../context/appContext';
 import { useEffect } from 'react';
+import { CircleSpin } from '../../../components';
 
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 const organImgWidth = Dimensions.get('window').width / 5 - 20;
@@ -13,7 +14,7 @@ const organImgWidth = Dimensions.get('window').width / 5 - 20;
 export default function PlantDetails() {
 
     const router = useRouter();
-    const {plant_id} = useLocalSearchParams();
+    const { plant_id } = useLocalSearchParams();
 
     const organIcons = {
         'leaf': <Entypo name="leaf" size={28} color="black" style={styles.eachOrganIcon} />,
@@ -30,7 +31,7 @@ export default function PlantDetails() {
 
     if (isLoading) return (
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-            <Text style={{ fontSize: 30, color: '#ccc' }}>Loading...</Text>
+            <CircleSpin />
         </View>
     )
 
