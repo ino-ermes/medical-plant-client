@@ -15,16 +15,20 @@ export default function SetPassword() {
 
     const router = useRouter();
 
-    const { isLoading, showAlert, registerUser } = useAppContext();
+    const { isLoading, showAlert, resetPassword } = useAppContext();
 
-
+    const handleSubmit = (value, action) => {
+        if(value.password == value.repassword && value.password && !value.token) {
+            resetPassword(email, value.token, value.password)
+        }
+    };
 
     return (
         <View style={styles.container}>
             <View style={styles.form}>
                 <Formik
                     initialValues={{ email: '', token: '', password: '', repassword: '' }}
-                    onSubmit={(values, actions) => console.log(values)}
+                    onSubmit={handleSubmit}
                 >
                     {
                         (props) =>
@@ -41,11 +45,13 @@ export default function SetPassword() {
                                     onChangeText={props.handleChange('password')}
                                     value={props.values.password}
                                     name='Password'
+                                    type='password'
                                 />
                                 <FormRow
                                     onChangeText={props.handleChange('repassword')}
                                     value={props.values.repassword}
                                     name='Confirm Password'
+                                    type='password'
                                 />
                                 <TouchableOpacity style={styles.btn} onPress={props.handleSubmit} disabled={isLoading} >
                                     <Text style={styles.btnTxt}>Change Password</Text>

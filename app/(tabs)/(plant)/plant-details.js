@@ -5,7 +5,7 @@ import { Entypo, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons'
 import { Dimensions } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useAppContext } from '../../../context/appContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { CircleSpin } from '../../../components';
 
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
@@ -14,7 +14,8 @@ const organImgWidth = Dimensions.get('window').width / 5 - 20;
 export default function PlantDetails() {
 
     const router = useRouter();
-    const { plant_id } = useLocalSearchParams();
+    const {plant_id} = useLocalSearchParams();
+    const [plant, setPlant] = useState(null);
 
     const organIcons = {
         'leaf': <Entypo name="leaf" size={28} color="black" style={styles.eachOrganIcon} />,
@@ -24,12 +25,23 @@ export default function PlantDetails() {
         'habit': <MaterialCommunityIcons name="tree" size={32} color="black" style={styles.eachOrganIcon} />,
     }
 
-    const { getPlant, plant_details, organs, isLoading } = useAppContext();
+    const { myFetch } = useAppContext();
     useEffect(() => {
-        getPlant(plant_id)
+        (async () => {
+            try {
+                const response = await myFetch.get(`/plants/${plant_id}`);
+                const { plant, organs } = response.data;
+                setPlant({
+                    plant,
+                    organs,
+                });
+            } catch (error) {
+                router.back();
+            }
+        })();
     }, [plant_id]);
 
-    if (isLoading) return (
+    if (!plant) return (
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
             <CircleSpin />
         </View>
@@ -40,50 +52,50 @@ export default function PlantDetails() {
             <View style={styles.bigTitleContainer}>
                 <Image
                     style={styles.bigImage}
-                    source={{ uri: plant_details.img_url }}
+                    source={{ uri: plant.plant.img_url }}
                     placeholder={blurhash}
                     contentFit="cover"
                     transition={1000}
                 />
-                <Text style={styles.bigTitle}>{plant_details.common_name}</Text>
+                <Text style={styles.bigTitle}>{plant.plant.common_name}</Text>
             </View>
 
             <View style={styles.details}>
                 <ItemList
                     title={'Tên khác'}
-                    description={plant_details.another_name}
+                    description={plant.plant.another_name}
                 />
                 <ItemList
                     title={'Tên khoa học'}
-                    description={plant_details.binomial_name}
+                    description={plant.plant.binomial_name}
                 />
                 <ItemList
                     title={'Họ'}
-                    description={plant_details.family}
+                    description={plant.plant.family}
                 />
                 <ItemList
                     title={'Bộ phận dùng'}
-                    description={plant_details.usable_part}
+                    description={plant.plant.usable_part}
                 />
                 <ItemList
                     title={'Công năng, chủ trị'}
-                    description={plant_details.function}
+                    description={plant.plant.function}
                 />
                 <ItemList
                     title={'Liều lượng, cách dùng'}
-                    description={plant_details.usage}
+                    description={plant.plant.usage}
                 />
             </View>
 
             <View>
                 <Text style={styles.libTitle}>Library</Text>
                 <View style={styles.organsContainer}>
-                    {organs.map((value) =>
+                    {plant.organs.map((value) =>
                         <View style={styles.eachOrganContainer} key={value.organ}>
                             <TouchableOpacity onPress={() => router.push({
                                 'pathname': 'image-library',
                                 'params': {
-                                    plant_id: plant_details._id,
+                                    plant_id: plant.plant._id,
                                     organ: value.organ
                                 }
                             })}>

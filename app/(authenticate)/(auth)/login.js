@@ -29,11 +29,13 @@ export default function Register() {
                   onChangeText={props.handleChange('email')}
                   value={props.values.email}
                   name='Email'
+                  type='email'
                 />
                 <FormRow
                   onChangeText={props.handleChange('password')}
                   value={props.values.password}
                   name='Password'
+                  type='password'
                 />
                 <TouchableOpacity style={styles.btn} onPress={props.handleSubmit} disabled={isLoading} >
                   <Text style={styles.btnTxt}>Login</Text>

@@ -11,7 +11,10 @@ export default function ForgotPassword() {
     const router = useRouter();
 
     const handleSubmit = (values, actions) => {
-        router.push(`/set-password?email=${values.email}`);
+        forgotPassword(values.email);
+        setTimeout(() => {
+            router.push(`/set-password?email=${values.email}`);
+        }, 1500);
     }
 
     return (
@@ -31,6 +34,7 @@ export default function ForgotPassword() {
                                     onChangeText={props.handleChange('email')}
                                     value={props.values.email}
                                     name='Email'
+                                    type='email'
                                 />
                                 <TouchableOpacity style={styles.btn} onPress={props.handleSubmit} disabled={isLoading} >
                                     <Text style={styles.btnTxt}>Next</Text>

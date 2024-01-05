@@ -33,16 +33,19 @@ export default function ChangePassword() {
                                     onChangeText={props.handleChange('password')}
                                     value={props.values.password}
                                     name='Password'
+                                    type='password'
                                 />
                                 <FormRow
                                     onChangeText={props.handleChange('newPassword')}
                                     value={props.values.newPassword}
                                     name='New Password'
+                                    type='password'
                                 />
                                 <FormRow
                                     onChangeText={props.handleChange('reNewPassword')}
                                     value={props.values.reNewPassword}
                                     name='Confirm New Password'
+                                    type='password'
                                 />
                                 <TouchableOpacity style={styles.btn} onPress={props.handleSubmit} disabled={isLoading} >
                                     <Text style={styles.btnTxt}>Change Password</Text>

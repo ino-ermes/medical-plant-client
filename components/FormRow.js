@@ -1,14 +1,14 @@
 import {Text, View, TextInput, StyleSheet} from 'react-native';
-function FormRow({value, onChangeText, name}) {
+function FormRow({value, onChangeText, name, type}) {
     return (
         <View style={styles.formRow}>
             <Text style={styles.formLabel}>{name}</Text>
             <TextInput style={styles.formInput}
                 onChangeText={onChangeText}
                 value={value}
-                secureTextEntry={name=='Password'}
+                secureTextEntry={type=='password'}
                 autoCapitalize='none'
-                autoComplete={name=='Email' ? 'email' : 'off'}
+                autoComplete={type=='email' ? 'email' : 'off'}
             />
         </View>
     )

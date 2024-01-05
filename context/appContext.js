@@ -14,15 +14,10 @@ const initialState = {
     alertText: '',
     alertType: '',
     user: null,
-    images: [],
-    images_total_pages: 0,
-    predict_list: [],
-    histories: [],
-    histories_total_pages: 1,
-    histories_cur_page: 0,
-    plants: [],
-    organs: [],
-    plant_details: {},
+    myAuthFetch: null,
+    myFetch: axios.create({
+        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1'
+    }),
 };
 
 const AppContext = createContext();
@@ -45,9 +40,6 @@ function AppProvider({ children }) {
         dispatch({ type: AC.SWITCH_REGISTER_LOGIN });
     }
 
-    const myFetch = axios.create({
-        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1'
-    });
     const myAuthFetch = axios.create({
         baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
         headers: {
@@ -58,13 +50,18 @@ function AppProvider({ children }) {
     const registerUser = async (currentUser) => {
         dispatch({ type: AC.REGISTER_USER_BEGIN });
         try {
-            const response = await myFetch.post('/auth/register', currentUser);
+            const response = await state.myFetch.post('/auth/register', currentUser);
             const user = response.data;
             await SecureStore.setItemAsync('access_token', user.access_token);
             dispatch({
                 type: AC.REGISTER_USER_SUCCESS,
                 payload: {
-                    user,
+                    user, myAuthFetch: axios.create({
+                        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
+                        headers: {
+                            'Authorization': `Bearer ${user.access_token}`
+                        }
+                    })
                 },
             });
         } catch (error) {
@@ -79,13 +76,18 @@ function AppProvider({ children }) {
     const loginUser = async (currentUser) => {
         dispatch({ type: AC.LOGIN_USER_BEGIN });
         try {
-            const response = await myFetch.post('/auth/login', currentUser);
+            const response = await state.myFetch.post('/auth/login', currentUser);
             const user = response.data;
             await SecureStore.setItemAsync('access_token', user.access_token);
             dispatch({
                 type: AC.LOGIN_USER_SUCCESS,
                 payload: {
-                    user,
+                    user, myAuthFetch: axios.create({
+                        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
+                        headers: {
+                            'Authorization': `Bearer ${user.access_token}`
+                        }
+                    })
                 },
             });
         } catch (error) {
@@ -101,6 +103,9 @@ function AppProvider({ children }) {
         await SecureStore.deleteItemAsync('access_token')
         dispatch({
             type: AC.LOGOUT_USER,
+            payload: {
+                initialState,
+            },
         });
     };
 
@@ -110,22 +115,7 @@ function AppProvider({ children }) {
             type: AC.UPDATE_USER_BEGIN,
         })
         try {
-            let response = null
-            if (myUser.img_uri) {
-                const formData = new FormData();
-                formData.append("image", {
-                    uri: myUser.img_uri,
-                    type: 'image/jpeg',
-                    name: 'plant.jpeg',
-                });
-                response = await myAuthFetch.patch(`/users/${state.user.user._id}`, formData, {
-                    headers: {
-                        'content-type': 'multipart/form-data',
-                    },
-                });
-            } else {
-                response = await myAuthFetch.patch(`/users/${state.user.user._id}`, myUser);
-            }
+            const response = await myAuthFetch.patch(`/users/${state.user.user.id}`, myUser);
             const { user } = response.data;
             userCombine = {
                 user,
@@ -136,6 +126,10 @@ function AppProvider({ children }) {
             dispatch({ type: AC.UPDATE_USER_ERROR, payload: { msg: error.response.data.message } });
         }
         clearAlert();
+    };
+
+    const changeAvatar = (img_uri) => {
+        dispatch({ type: AC.CHANGE_AVATAR, payload: { img_uri } });
     };
 
     const changePassword = async (cur_password, new_password) => {
@@ -162,7 +156,7 @@ function AppProvider({ children }) {
                 type: AC.GET_USER_BEGIN,
             })
             try {
-                const response = await myFetch.get('/users/my-info', {
+                const response = await state.myFetch.get('/users/my-info', {
                     headers: {
                         'Authorization': `Bearer ${access_token}`
                     }
@@ -172,108 +166,56 @@ function AppProvider({ children }) {
                     user,
                     access_token,
                 }
-                dispatch({ type: AC.GET_USER_SUCCESS, payload: { user: userCombine } });
+                dispatch({
+                    type: AC.GET_USER_SUCCESS, payload: {
+                        user: userCombine, myAuthFetch: axios.create({
+                            baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
+                            headers: {
+                                'Authorization': `Bearer ${access_token}`
+                            }
+                        })
+                    }
+                });
             } catch (error) {
                 dispatch({ type: AC.GET_USER_ERROR });
             }
         }
     };
 
-    useEffect(() => {
-        getUser();
-    }, []);
-
-    const setImageLib = (images, index) => {
-        dispatch({
-            type: AC.SET_IMAGE_LIB,
-            payload: {
-                images,
-                index
-            }
-        })
-    };
-    const predictPlant = async (img_uri) => {
-        dispatch({ type: AC.PREDICT_PLANT_BEGIN });
-
-        const formData = new FormData();
-        formData.append("image", {
-            uri: img_uri,
-            type: 'image/jpeg',
-            name: 'plant.jpeg',
-        });
-
+    const forgotPassword = async (email) => {
+        dispatch({ type: AC.FORGOT_PASSWORD_BEGIN });
         try {
-            const response = await myAuthFetch.post('/predicts', formData, {
-                headers: {
-                    'content-type': 'multipart/form-data',
-                },
+            await state.myFetch.post('/auth/forgot-password', {
+                email,
             });
-            const { predict_list } = response.data;
             dispatch({
-                type: AC.PREDICT_PLANT_SUCCESS,
-                payload: {
-                    predict_list,
-                },
+                type: AC.FORGOT_PASSWORD_SUCCESS,
             });
         } catch (error) {
             dispatch({
-                type: AC.PREDICT_PLANT_ERROR,
+                type: AC.FORGOT_PASSWORD_ERROR,
                 payload: { msg: error.response.data.message },
             });
         }
+        clearAlert();
     };
 
-    const getPlants = async (search) => {
-        dispatch({ type: AC.GET_PLANTS_BEGIN });
+    const resetPassword = async (email, token, password) => {
+        dispatch({ type: AC.RESET_PASSWORD_BEGIN });
         try {
-            url = '/plants';
-            if (search) {
-                url += `?search=${search}`
-            }
-            const response = await myFetch.get(url);
-            const { plants } = response.data;
-            dispatch({ type: AC.GET_PLANTS_SUCCESS, payload: { plants } });
+            await state.myFetch.post('/auth/reset-password', {
+                email, token, password,
+            });
+            dispatch({
+                type: AC.RESET_PASSWORD_SUCCESS,
+            });
         } catch (error) {
-            dispatch({ type: AC.GET_PLANTS_ERROR });
+            dispatch({
+                type: AC.RESET_PASSWORD_ERROR,
+                payload: { msg: error.response.data.message },
+            });
         }
-    };
-
-    const getPlant = async (plant_id) => {
-        dispatch({ type: AC.GET_PLANT_BEGIN });
-        try {
-            const response = await myFetch.get(`/plants/${plant_id}`);
-            const { plant, organs } = response.data;
-            dispatch({ type: AC.GET_PLANT_SUCCESS, payload: { plant, organs } });
-        } catch (error) {
-            dispatch({ type: AC.GET_PLANT_ERROR });
-        }
-    };
-
-    const getImages = async (plant_id, organ, page, isConcat) => {
-        if (isConcat && page > state.images_total_pages)
-            return;
-        dispatch({ type: AC.GET_IMAGES_BEGIN, payload: { isConcat } });
-        try {
-            const response = await myFetch.get(`/plants/${plant_id}/image?organ=${organ}&page=${page}`);
-            const { plant_imgs, total_pages } = response.data;
-            dispatch({ type: AC.GET_IMAGES_SUCCESS, payload: { plant_imgs, total_pages } });
-        } catch (error) {
-            dispatch({ type: AC.GET_IMAGES_ERROR });
-        }
-    };
-
-    const getHistories = async () => {
-        if (state.histories_cur_page + 1 > state.histories_total_pages) {
-            return;
-        }
-        dispatch({ type: AC.GET_HISTORIES_BEGIN, payload: { reset: state.histories_cur_page == 0 } });
-        try {
-            const response = await myAuthFetch.get(`/predicts?page=${state.histories_cur_page + 1}`);
-            const { predicts, total_pages } = response.data;
-            dispatch({ type: AC.GET_HISTORIES_SUCCESS, payload: { predicts, total_pages, page: state.histories_cur_page + 1 } });
-        } catch (error) {
-            dispatch({ type: AC.GET_HISTORIES_ERROR });
-        }
+        clearAlert();
     };
 
     return (
@@ -284,15 +226,13 @@ function AppProvider({ children }) {
             switchRegisterLogin,
             registerUser,
             loginUser,
-            setImageLib,
             logoutUser,
-            predictPlant,
-            getPlants,
-            getPlant,
-            getImages,
-            getHistories,
             changePassword,
             updateUser,
+            getUser,
+            changeAvatar,
+            resetPassword,
+            forgotPassword,
         }}>
             {children}
         </AppContext.Provider>

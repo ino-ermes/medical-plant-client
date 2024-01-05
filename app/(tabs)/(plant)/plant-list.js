@@ -5,17 +5,21 @@ import { PlantItem } from '../../../components';
 import { useRouter } from 'expo-router';
 import { useAppContext } from '../../../context/appContext';
 import { CircleSpin } from '../../../components';
+import { AntDesign } from '@expo/vector-icons';
 
 export default function PlantList() {
 
     const [search, setSearch] = useState('');
     const [localSearch, setLocalSearch] = useState('');
     const [isFocus, setFocus] = useState(false);
+    const [plants, setPlants] = useState([]);
+
+    const [loading, setLoading] = useState(false);
 
     const debounce = (fn) => {
         let timerId;
         return (text) => {
-            if (isLoading) return;
+            if (loading) return;
             clearTimeout(timerId);
             setLocalSearch(text);
             timerId = setTimeout(() => {
@@ -32,10 +36,45 @@ export default function PlantList() {
 
     const router = useRouter();
 
-    const { getPlants, plants, isLoading } = useAppContext();
+    const { myFetch } = useAppContext();
     useEffect(() => {
-        getPlants(search);
+        (async () => {
+            setLoading(true);
+            try {
+                url = '/plants';
+                if (search) {
+                    url += `?search=${search}`
+                }
+                const response = await myFetch.get(url);
+                const { plants } = response.data;
+                setPlants(plants);
+            } catch (error) {
+                setPlants([]);
+            } finally {
+                setLoading(false);
+            }
+        })();
     }, [search]);
+
+    if (loading) {
+        return (
+            <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                <CircleSpin />
+            </View>
+        )
+    }
+
+    if (plants.length == 0) {
+        return (
+            <View style={[styles.container, {alignItems: 'center', justifyContent: 'center'}]}>
+                <View style={styles.searchBar}>
+                    <TextInput style={[styles.searchInput, isFocus ? styles.searchInputFocus : null]} value={localSearch} onChangeText={optimizedDebounde} onFocus={() => { setFocus(true) }} onBlur={() => { setFocus(false) }} placeholder='Search' />
+                    <Feather name="search" size={20} style={[styles.searchIcon, isFocus ? styles.searchIconFocusInput : null]} />
+                </View>
+                <AntDesign name="meh" size={80} color="black"/>
+            </View>
+        )
+    }
 
     return (
         <View style={styles.container}>
@@ -43,31 +82,26 @@ export default function PlantList() {
                 <TextInput style={[styles.searchInput, isFocus ? styles.searchInputFocus : null]} value={localSearch} onChangeText={optimizedDebounde} onFocus={() => { setFocus(true) }} onBlur={() => { setFocus(false) }} placeholder='Search' />
                 <Feather name="search" size={20} style={[styles.searchIcon, isFocus ? styles.searchIconFocusInput : null]} />
             </View>
-            {isLoading ?
-                <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
-                    <CircleSpin />
-                </View> :
-                <FlatList contentContainerStyle={{ paddingBottom: 12 }}
-                    data={plants}
-                    renderItem={({ item }) =>
-                        <PlantItem
-                            name={item.common_name}
-                            scienceName={item.binomial_name}
-                            src={item.thumb_img_url}
-                            onPress={() => {
-                                router.push({
-                                    'pathname': '/plant-details',
-                                    'params': {
-                                        'plant_id': item._id
-                                    }
-                                })
-                            }}
-                        />
+            <FlatList contentContainerStyle={{ paddingBottom: 12 }}
+                data={plants}
+                renderItem={({ item }) =>
+                    <PlantItem
+                        name={item.common_name}
+                        scienceName={item.binomial_name}
+                        src={item.thumb_img_url}
+                        onPress={() => {
+                            router.push({
+                                'pathname': '/plant-details',
+                                'params': {
+                                    'plant_id': item._id
+                                }
+                            })
+                        }}
+                    />
 
-                    }
-                    keyExtractor={(item) => item._id}
-                />
-            }
+                }
+                keyExtractor={(item) => item._id}
+            />
         </View>
     );
 }

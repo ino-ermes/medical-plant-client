@@ -32,7 +32,7 @@ export default function TabLayout() {
         name='(history)'
         options={{tabBarIcon: ({focused, size, color}) => {
           return <MaterialCommunityIcons name="history" size={size + 7} color={focused ? '#2cb1bc' : color} />
-        }, tabBarLabel: 'History',}}
+        }, tabBarLabel: 'History', unmountOnBlur: true} }
         />
       <Tabs.Screen
         name='(setting)'

@@ -8,37 +8,60 @@ import { launchImageLibraryAsync, MediaTypeOptions } from 'expo-image-picker';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { CircleSpin } from '../../../components';
 
 export default function Setting() {
 
     const [isModal, setModal] = useState(false);
-
     
-    const { user, logoutUser, updateUser } = useAppContext();
+    const { user, logoutUser, changeAvatar, myAuthFetch } = useAppContext();
+    const [loading, setLoading] = useState(false);
     const [imgPreview, setImgPreview] = useState(null);
     const router = useRouter();
     
-    const changeUserImg = () => {
+    const changeUserImg = async () => {
+        toggleModal();
         if(!imgPreview) return;
-        updateUser({
-            img_uri: imgPreview,
-        });
-        setTimeout(() => {
-            setModal(false);
-        }, 6000);
-
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append("image", {
+                uri: imgPreview,
+                type: 'image/jpeg',
+                name: 'plant.jpeg',
+            });
+            const response = await myAuthFetch.patch(`/users/${user.user.id}`, formData, {
+                headers: {
+                    'content-type': 'multipart/form-data',
+                },
+            });
+            const { user: info } = response.data;
+            changeAvatar(info.img_url);
+        } catch (error) {
+        } finally {
+            setLoading(false);
+        }
     };
 
     const pickImage = async () => {
         const result = await launchImageLibraryAsync({
-            mediaTypes: MediaTypeOptions.All,
+            mediaTypes: MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setImgPreview(result.assets[0].uri);
+            const uri = await manipulateAsync(
+                result.assets[0].uri,
+                [{resize: {
+                    height: 600,
+                    with: 600,
+                }}],
+                { compress: 1, format: SaveFormat.JPEG}
+            );
+            setImgPreview(uri.uri);
         }
     };
 
@@ -48,6 +71,15 @@ export default function Setting() {
             return !isModal;
         });
     };
+
+    if(loading) {
+        return (
+            <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                <CircleSpin />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             <Modal

@@ -6,12 +6,10 @@ import * as ImagePicker from 'expo-image-picker';
 import { Modal } from '../../../components';
 import { useAppContext } from '../../../context/appContext';
 import { useRouter } from 'expo-router';
-
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 const blurhash = '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
 
 export default function Predict() {
-
-    const {predictPlant, isLoading} = useAppContext();
 
     const [isModal, setModal] = useState(false);
 
@@ -28,35 +26,55 @@ export default function Predict() {
             await requestPermission();
         }
         const result = await ImagePicker.launchCameraAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            const uri = await manipulateAsync(
+                result.assets[0].uri,
+                [{resize: {
+                    height: 600,
+                    with: 600,
+                }}],
+                { compress: 1, format: SaveFormat.JPEG}
+            );
+            setImage(uri.uri);
             toggleModal();
         }
     };
 
     const pickImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
+            const uri = await manipulateAsync(
+                result.assets[0].uri,
+                [{resize: {
+                    height: 600,
+                    with: 600,
+                }}],
+                { compress: 1, format: SaveFormat.JPEG}
+            );
+            setImage(uri.uri);
             toggleModal();
         }
     };
 
     const router = useRouter();
     const handlePredict = (image) => {
-        predictPlant(image);
-        router.push('/result');
+        router.push({
+            pathname: '/result',
+            params: {
+                img_uri: image,
+            }
+        });
     }
     
     return (
@@ -92,7 +110,7 @@ export default function Predict() {
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity disabled={isLoading || image == null} style={styles.btn} onPress={() => handlePredict(image)}>
+            <TouchableOpacity disabled={image == null} style={styles.btn} onPress={() => handlePredict(image)}>
                 <Text style={styles.btnTxt}>Predict</Text>
             </TouchableOpacity>
         </View>

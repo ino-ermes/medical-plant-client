@@ -1,37 +1,69 @@
 import { StyleSheet, View, FlatList, Text } from 'react-native';
 import { PlantItem } from '../../../components';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAppContext } from '../../../context/appContext';
-import {EarthLoading} from '../../../components';
+import { EarthLoading } from '../../../components';
+import { useEffect, useState } from 'react';
 
 export default function Result() {
 
-    const { isLoading, predict_list } = useAppContext();
+    const { myAuthFetch } = useAppContext();
+
+    const [predictList, setPredictList] = useState(null);
+
     const router = useRouter();
 
-    if (isLoading) return (
+    const { img_uri } = useLocalSearchParams();
+
+    useEffect(() => {
+        (async () => {
+            const formData = new FormData();
+            formData.append("image", {
+                uri: img_uri,
+                type: 'image/jpeg',
+                name: 'plant.jpeg',
+            });
+
+            try {
+                const response = await myAuthFetch.post('/predicts', formData, {
+                    headers: {
+                        'content-type': 'multipart/form-data',
+                    },
+                });
+
+                const { predict_list } = response.data;
+
+                setPredictList(predict_list);
+            } catch (error) {
+                router.back();
+            }
+        })();
+    }, []);
+
+    if (!predictList) return (
         <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
             <EarthLoading />
         </View>
     )
 
-
     return (
         <View style={styles.container}>
             <FlatList contentContainerStyle={{ paddingBottom: 12 }}
-                data={predict_list}
+                data={predictList}
                 renderItem={({ item }) =>
                     <PlantItem
                         name={item.common_name}
                         scienceName={item.binomial_name}
                         src={item.thumb_img_url}
                         confidence={item.confidence}
-                        onPress={() => { router.push({
-                            pathname: '/result-plant-details',
-                            params: {
-                                plant_id: item._id,
-                            }
-                        }) }}
+                        onPress={() => {
+                            router.push({
+                                pathname: '/result-plant-details',
+                                params: {
+                                    plant_id: item._id,
+                                }
+                            })
+                        }}
                     />
                 }
                 keyExtractor={(item) => item._id}

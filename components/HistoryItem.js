@@ -1,8 +1,8 @@
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Image } from 'expo-image';
-import { memo } from "react";
+import { AntDesign } from '@expo/vector-icons';
 
-function HistoryItem({ imageUri, name, scienceName, date, handleShare, handleDelete }) {
+function HistoryItem({ imageUri, name, scienceName, date, onPress}) {
     return (
         <TouchableOpacity style={styles.container} activeOpacity={0.8}>
             <Image
@@ -16,20 +16,7 @@ function HistoryItem({ imageUri, name, scienceName, date, handleShare, handleDel
                 <Text numberOfLines={2} style={styles.scienceName}>{scienceName} </Text>
                 <Text style={styles.date}>{date} </Text>
             </View>
-            {/* <View style={styles.btnBox}>
-                <TouchableOpacity
-                    style={styles.btn}
-                    onPress={handleShare}
-                >
-                    <Text style={styles.btnText}>Share</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.btn, styles.btnDel]}
-                    onPress={handleDelete}
-                >
-                    <Text style={styles.btnText}>Delete</Text>
-                </TouchableOpacity>
-            </View> */}
+            <AntDesign name="delete" size={24} color="red" onPress={onPress} style={{padding: 10}}/>
         </TouchableOpacity>
     );
 }
@@ -45,6 +32,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         elevation: 3,
         marginBottom: 10,
+        alignItems: 'center',
     },
     image: {
         width: 100,
@@ -71,27 +59,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#aaa',
     },
-    btnBox: {
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-        marginRight: 10,
-    },
-    btn: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 8,
-        paddingHorizontal: 32,
-        borderRadius: 4,
-        elevation: 3,
-        backgroundColor: '#2cb1bc',
-        width: '100%',
-    },
-    btnText: {
-        color: '#fff',
-    },
-    btnDel: {
-        backgroundColor: '#dc143c',
-    },
 });
 
-export default memo(HistoryItem)
+export default HistoryItem;
