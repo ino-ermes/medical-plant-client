@@ -46,6 +46,12 @@ export default function Result() {
         </View>
     )
 
+    if (predictList.length == 0) return (
+        <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+            <Text style={{fontSize: 20, opacity: 0.6}}>Predict server is disconnected. Try another time.</Text>
+        </View>
+    )
+
     return (
         <View style={styles.container}>
             <FlatList contentContainerStyle={{ paddingBottom: 12 }}

@@ -11,10 +11,11 @@ export default function ForgotPassword() {
     const router = useRouter();
 
     const handleSubmit = (values, actions) => {
-        forgotPassword(values.email);
-        setTimeout(() => {
-            router.push(`/set-password?email=${values.email}`);
-        }, 1500);
+        forgotPassword(values.email, () => {
+            setTimeout(() => {
+                router.push(`/set-password?email=${values.email}`);
+            }, 1500);
+        });
     }
 
     return (

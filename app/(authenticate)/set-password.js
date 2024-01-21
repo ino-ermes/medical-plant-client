@@ -3,23 +3,29 @@ import { Formik } from 'formik';
 import { FormRow, Alert, Logo } from '../../components';
 import { useAppContext } from '../../context/appContext';
 import { useRouter, useLocalSearchParams, Redirect } from 'expo-router';
+import { useState } from 'react';
 
 export default function SetPassword() {
 
 
     const { email } = useLocalSearchParams();
 
-    if (!email) {
+    const [success, setSuccess] = useState(false);
+
+    if (!email || success) {
         return <Redirect href="/" />;
     }
-
-    const router = useRouter();
 
     const { isLoading, showAlert, resetPassword } = useAppContext();
 
     const handleSubmit = (value, action) => {
-        if(value.password == value.repassword && value.password && !value.token) {
-            resetPassword(email, value.token, value.password)
+        console.log(value);
+        if(value.password == value.repassword && value.password && value.token) {
+            resetPassword(email, value.token, value.password, () => {
+                setTimeout(() => {
+                    setSuccess(true);
+                }, 1500);
+            });
         }
     };
 

@@ -31,7 +31,7 @@ export default function Setting() {
                 type: 'image/jpeg',
                 name: 'plant.jpeg',
             });
-            const response = await myAuthFetch.patch(`/users/${user.user.id}`, formData, {
+            const response = await myAuthFetch.post(`/users/${user.user.id}/avatar`, formData, {
                 headers: {
                     'content-type': 'multipart/form-data',
                 },

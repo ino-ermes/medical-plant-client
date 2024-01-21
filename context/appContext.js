@@ -7,6 +7,8 @@ import axios from 'axios';
 
 import * as SecureStore from 'expo-secure-store';
 
+const baseURL = 'https://besame-x2-mucho.onrender.com/api/v1';
+
 const initialState = {
     isMember: true,
     isLoading: false,
@@ -16,7 +18,7 @@ const initialState = {
     user: null,
     myAuthFetch: null,
     myFetch: axios.create({
-        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1'
+        baseURL: baseURL,
     }),
 };
 
@@ -40,13 +42,6 @@ function AppProvider({ children }) {
         dispatch({ type: AC.SWITCH_REGISTER_LOGIN });
     }
 
-    const myAuthFetch = axios.create({
-        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
-        headers: {
-            'Authorization': `Bearer ${state?.user?.access_token}`
-        }
-    });
-
     const registerUser = async (currentUser) => {
         dispatch({ type: AC.REGISTER_USER_BEGIN });
         try {
@@ -57,7 +52,7 @@ function AppProvider({ children }) {
                 type: AC.REGISTER_USER_SUCCESS,
                 payload: {
                     user, myAuthFetch: axios.create({
-                        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
+                        baseURL: baseURL,
                         headers: {
                             'Authorization': `Bearer ${user.access_token}`
                         }
@@ -83,7 +78,7 @@ function AppProvider({ children }) {
                 type: AC.LOGIN_USER_SUCCESS,
                 payload: {
                     user, myAuthFetch: axios.create({
-                        baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
+                        baseURL: baseURL,
                         headers: {
                             'Authorization': `Bearer ${user.access_token}`
                         }
@@ -115,7 +110,7 @@ function AppProvider({ children }) {
             type: AC.UPDATE_USER_BEGIN,
         })
         try {
-            const response = await myAuthFetch.patch(`/users/${state.user.user.id}`, myUser);
+            const response = await state.myAuthFetch.patch(`/users/${state.user.user.id}`, myUser);
             const { user } = response.data;
             userCombine = {
                 user,
@@ -138,7 +133,7 @@ function AppProvider({ children }) {
             type: AC.CHANGE_PASSWORD_BEGIN,
         })
         try {
-            const response = await myAuthFetch.post('/auth/change-password', {
+            const response = await state.myAuthFetch.post('/auth/change-password', {
                 cur_password, new_password
             });
             const { message } = response.data;
@@ -169,7 +164,7 @@ function AppProvider({ children }) {
                 dispatch({
                     type: AC.GET_USER_SUCCESS, payload: {
                         user: userCombine, myAuthFetch: axios.create({
-                            baseURL: 'https://besame-x2-mucho.onrender.com/api/v1',
+                            baseURL: baseURL,
                             headers: {
                                 'Authorization': `Bearer ${access_token}`
                             }
@@ -182,7 +177,7 @@ function AppProvider({ children }) {
         }
     };
 
-    const forgotPassword = async (email) => {
+    const forgotPassword = async (email, onSuccess) => {
         dispatch({ type: AC.FORGOT_PASSWORD_BEGIN });
         try {
             await state.myFetch.post('/auth/forgot-password', {
@@ -191,6 +186,7 @@ function AppProvider({ children }) {
             dispatch({
                 type: AC.FORGOT_PASSWORD_SUCCESS,
             });
+            onSuccess();
         } catch (error) {
             dispatch({
                 type: AC.FORGOT_PASSWORD_ERROR,
@@ -200,7 +196,7 @@ function AppProvider({ children }) {
         clearAlert();
     };
 
-    const resetPassword = async (email, token, password) => {
+    const resetPassword = async (email, token, password, onSuccess) => {
         dispatch({ type: AC.RESET_PASSWORD_BEGIN });
         try {
             await state.myFetch.post('/auth/reset-password', {
@@ -209,6 +205,7 @@ function AppProvider({ children }) {
             dispatch({
                 type: AC.RESET_PASSWORD_SUCCESS,
             });
+            onSuccess();
         } catch (error) {
             dispatch({
                 type: AC.RESET_PASSWORD_ERROR,
